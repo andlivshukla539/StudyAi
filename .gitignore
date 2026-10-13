@@ -1,0 +1,155 @@
+# ==========================================
+# StudyAi - Unified Monorepo .gitignore
+# ==========================================
+
+# ------------------------------------------
+# 1. SECURITY & CREDENTIALS (CRITICAL)
+# ------------------------------------------
+# Environment variables and secrets
+*.env
+*.env.*
+*.env.local
+*.env.development.local
+*.env.test.local
+*.env.production.local
+**/*.env
+**/*.env.*
+**/*.env.local
+
+# Allow explicit example environment files only
+!.env.example
+!**/.env.example
+!.env.sample
+!**/.env.sample
+
+# Private keys, certificates, and auth tokens
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+*.jks
+*.keystore
+
+# Cloud and Service Credentials
+google-services.json
+GoogleService-Info.plist
+**/google-services.json
+**/GoogleService-Info.plist
+*serviceAccountKey*.json
+**/*serviceAccountKey*.json
+*firebase-admin*.json
+**/*firebase-admin*.json
+credentials.json
+**/credentials.json
+client_secret*.json
+**/client_secret*.json
+
+# ------------------------------------------
+# 2. BACKEND (Node.js / TypeScript / Prisma)
+# ------------------------------------------
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Prisma SQLite / local databases if any
+prisma/*.db
+prisma/*.db-journal
+
+# ------------------------------------------
+# 3. FRONTEND (Flutter / Dart / Mobile)
+# ------------------------------------------
+# Dart / Flutter build artifacts
+.dart_tool/
+**/.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+.pub-cache/
+**/.pub-cache/
+.pub/
+**/.pub/
+build/
+**/build/
+
+# Android-specific artifacts
+**/android/.gradle/
+**/android/captures/
+**/android/local.properties
+local.properties
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+.gradle/
+**/.gradle/
+
+# iOS & macOS ephemeral build files
+**/ios/Flutter/.last_build_id
+**/ios/Flutter/ephemeral/
+**/macos/Flutter/ephemeral/
+**/ios/Pods/
+**/macos/Pods/
+**/ios/.symlinks/
+**/macos/.symlinks/
+**/ios/Flutter/Generated.xcconfig
+**/macos/Flutter/Generated.xcconfig
+
+# Flutter symbols & obfuscation maps
+app.*.symbols
+app.*.map.json
+**/doc/api/
+**/coverage/
+.widget_preview/
+**/.widget_preview/
+
+# ------------------------------------------
+# 4. IDEs, EDITORS & OPERATING SYSTEM
+# ------------------------------------------
+# macOS
+.DS_Store
+**/.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# JetBrains / IntelliJ IDEA
+.idea/
+**/.idea/
+*.iml
+**/*.iml
+*.ipr
+*.iws
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
+**/.history/
+
+# Temporary / Scratch files
+*.swp
+*.swo
+*.tmp
+*.bak
+*.log
+logs/
+**/logs/
