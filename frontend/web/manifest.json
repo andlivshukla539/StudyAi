@@ -1,11 +1,11 @@
 {
-    "name": "ai_study_companion",
-    "short_name": "ai_study_companion",
+    "name": "NeuRA",
+    "short_name": "NeuRA",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "NeuRA - Your AI Study Buddy",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

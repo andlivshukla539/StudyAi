@@ -3,31 +3,82 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'auth_interceptor.dart';
 
 // ─── SERVER URL CONFIGURATION ──────────────────────────────────────────────
-// Priority order:
-//   1. LAN IP   — fast, no tunnel overhead, works when phone & laptop share Wi-Fi
-//   2. Tunnel   — fallback when firewall blocks the LAN IP
+// The app auto-detects the fastest server:
+//   1. Tries LAN IP first (very fast, ~5ms)
+//   2. Falls back to the deployed server if LAN is unreachable
 //
-// HOW TO GET YOUR LAN IP (permanent fix):
-//   1. Open PowerShell and run:  ipconfig
-//   2. Look for "Wireless LAN adapter Wi-Fi" → "IPv4 Address" (e.g. 192.168.1.20)
-//   3. Replace _lanUrl below with your IP.
-//   4. Allow Node through Windows Firewall:
-//        - Press Win key → type "Windows Defender Firewall"
-//        - Click "Allow an app or feature through Windows Defender Firewall"
-//        - Click "Change settings" → "Allow another app" → Browse to:
-//            C:\Program Files\nodejs\node.exe   (or wherever your node.exe is)
-//        - Check BOTH "Private" and "Public" → OK.
-//      OR run this one-liner in an ADMIN PowerShell:
-//        New-NetFirewallRule -DisplayName "Node.js" -Direction Inbound -Program "C:\Program Files\nodejs\node.exe" -Action Allow
-//   5. After that, your phone can reach your laptop directly — no tunnel needed!
-//
-const String _lanUrl = 'http://192.168.1.20:3000/api/v1';
+const String _lanUrl = 'http://192.168.1.14:3000/api/v1';
 const String _tunnelUrl = 'https://studyai-bxcl.onrender.com/api/v1';
 
-// Toggle this to true once you've completed the firewall step above.
-const bool _useLanDirectly = false;
+/// Manages base URL with smart auto-detection and server warm-up.
+class ServerConfig {
+  static final ServerConfig _instance = ServerConfig._internal();
+  factory ServerConfig() => _instance;
+  ServerConfig._internal();
 
-const String baseUrl = _useLanDirectly ? _lanUrl : _tunnelUrl;
+  String _activeBaseUrl = _tunnelUrl;
+  bool _resolved = false;
+
+  String get baseUrl => _activeBaseUrl;
+
+  /// Probes local candidates first (emulator, localhost, LAN) with a short timeout.
+  /// If any responds, uses it immediately for zero-latency local development.
+  /// Otherwise, falls back to the cloud server and fires a warm-up ping in the background
+  /// so Render spins up while the user is looking at onboarding/login without blocking splash.
+  Future<void> resolveAndWarm() async {
+    if (_resolved) return;
+
+    final probeDio = Dio(BaseOptions(
+      connectTimeout: const Duration(milliseconds: 600),
+      receiveTimeout: const Duration(milliseconds: 800),
+      headers: {'Bypass-Tunnel-Reminder': 'true'},
+    ));
+
+    // Candidates: localhost (desktop/web), 10.0.2.2 (Android emulator), Wi-Fi LAN
+    final localCandidates = [
+      'http://127.0.0.1:3000/api/v1',
+      'http://10.0.2.2:3000/api/v1',
+      _lanUrl,
+    ];
+
+    // Try all local endpoints in parallel
+    for (final candidate in localCandidates) {
+      try {
+        final healthUrl = candidate.replaceAll('/api/v1', '/health');
+        final resp = await probeDio.get(healthUrl);
+        if (resp.statusCode == 200) {
+          _activeBaseUrl = candidate;
+          _resolved = true;
+          return;
+        }
+      } catch (_) {
+        // Try next candidate
+      }
+    }
+
+    // Local server not available — use cloud tunnel
+    _activeBaseUrl = _tunnelUrl;
+    _resolved = true;
+
+    // Fire warm-up ping to cloud server in background (non-blocking)
+    // This wakes up Render while the user navigates onboarding/login
+    final tunnelHealthUrl = _tunnelUrl.replaceAll('/api/v1', '/health');
+    Dio(BaseOptions(
+      connectTimeout: const Duration(seconds: 45),
+      receiveTimeout: const Duration(seconds: 45),
+      headers: {'Bypass-Tunnel-Reminder': 'true'},
+    )).get(tunnelHealthUrl).catchError((_) {
+      // Ignored: wake-up probe
+      return Response(requestOptions: RequestOptions(path: ''));
+    });
+  }
+
+  /// Reset so next app launch re-probes
+  void reset() => _resolved = false;
+}
+
+/// The current base URL (reactive — updates after ServerConfig resolves).
+String get baseUrl => ServerConfig().baseUrl;
 
 class DioClient {
   static final DioClient _instance = DioClient._internal();
@@ -41,15 +92,23 @@ class DioClient {
   DioClient._internal() {
     dio = Dio(
       BaseOptions(
-        baseUrl: baseUrl,
-        connectTimeout: const Duration(seconds: 30),
-        receiveTimeout: const Duration(seconds: 60), // bumped for AI calls
-        sendTimeout: const Duration(seconds: 30),
+        baseUrl: _tunnelUrl, // initial default; overridden per-request
+        connectTimeout: const Duration(seconds: 15),
+        receiveTimeout: const Duration(seconds: 30),
+        sendTimeout: const Duration(seconds: 15),
         headers: {
-          'Bypass-Tunnel-Reminder': 'true', // Bypasses localtunnel warning page
+          'Bypass-Tunnel-Reminder': 'true',
         },
       ),
     );
+
+    // Dynamically set baseUrl from ServerConfig before every request
+    dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) {
+        options.baseUrl = ServerConfig().baseUrl;
+        handler.next(options);
+      },
+    ));
 
     // Retry interceptor — automatically retries on 502/503 (tunnel flakiness)
     dio.interceptors.add(RetryInterceptor(dio: dio));

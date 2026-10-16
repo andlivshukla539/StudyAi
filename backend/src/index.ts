@@ -7,6 +7,7 @@ import userRouter from './routes/users';
 import quizRoutes from './routes/quiz';
 import flashcardRoutes from './routes/flashcard';
 import studyRoutes from './routes/study';
+import { prisma } from './utils/db.util';
 
 
 const app = express();
@@ -28,12 +29,33 @@ app.use('/api/v1/quizzes', authenticate, quizRoutes);
 app.use('/api/v1/flashcards', authenticate, flashcardRoutes);
 app.use('/api/v1/study', authenticate, studyRoutes);
 
-// Health check
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', environment: process.env.NODE_ENV });
+// Fast ping — no DB, no auth, instant response for client warm-up
+app.get('/ping', (_req, res) => {
+  res.status(200).send('pong');
 });
 
-// Start Server
-app.listen(port, '0.0.0.0', () => {
-  console.log(`[server]: Server is running at http://0.0.0.0:${port}`);
+// Health check — warms DB connection pool
+app.get('/health', async (_req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ status: 'ok', db: 'connected', environment: process.env.NODE_ENV });
+  } catch {
+    res.status(503).json({ status: 'degraded', db: 'disconnected' });
+  }
 });
+
+// Eagerly warm DB connection pool on startup (eliminates first-query cold start)
+async function startServer() {
+  try {
+    await prisma.$connect();
+    console.log('[db]: Prisma connected and connection pool warmed');
+  } catch (e) {
+    console.warn('[db]: Initial connection failed, will retry on first request:', e);
+  }
+
+  app.listen(port, '0.0.0.0', () => {
+    console.log(`[server]: Server is running at http://0.0.0.0:${port}`);
+  });
+}
+
+startServer();

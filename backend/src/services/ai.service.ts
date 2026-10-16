@@ -14,7 +14,7 @@ export async function streamAIResponse(
     const result = await streamText({
       model: google('gemini-1.5-flash'),
       messages: history,
-      system: `You are an AI Study Companion. You are helpful, encouraging, and clear. 
+      system: `You are NeuRA, an AI Study Buddy. You are helpful, encouraging, and clear. 
       You help students understand complex topics, create study plans, and stay focused.
       Format your responses using Markdown. Use lists and bold text to make it easy to read.
       Keep your responses concise but thorough.`,

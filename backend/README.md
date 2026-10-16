@@ -1,4 +1,4 @@
-# StudyAi - Backend API Server
+# NeuRA - Backend API Server
 
 High-performance Node.js, Express, and TypeScript backend powered by Prisma ORM, Google Gemini AI, and Supabase Vector for RAG (Retrieval-Augmented Generation).
 

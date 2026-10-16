@@ -1,7 +1,7 @@
 {
   "name": "ai-study-backend",
   "version": "1.0.0",
-  "description": "Backend for AI Study Companion",
+  "description": "Backend for NeuRA - AI Study Buddy",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",

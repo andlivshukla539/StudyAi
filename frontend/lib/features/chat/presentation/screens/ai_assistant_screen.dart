@@ -374,7 +374,7 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
     final user = authState.user;
     final String firstName = user?.profile?.firstName?.isNotEmpty == true
         ? user!.profile!.firstName!
-        : (user?.email.split('@').first ?? 'kartikey');
+        : (user?.email.split('@').first ?? 'andliv');
 
     final chatState = ref.watch(chatProvider);
 

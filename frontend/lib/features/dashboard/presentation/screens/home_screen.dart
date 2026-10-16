@@ -16,7 +16,7 @@ class HomeScreen extends ConsumerWidget {
     final user = authState.user;
     final String firstName = user?.profile?.firstName?.isNotEmpty == true
         ? user!.profile!.firstName!
-        : (user?.email.split('@').first ?? 'kartikey');
+        : (user?.email.split('@').first ?? 'andliv');
 
     final dashboardAsync = ref.watch(dashboardProvider);
 
@@ -100,7 +100,7 @@ class HomeScreen extends ConsumerWidget {
                                     ),
                                     children: [
                                       TextSpan(
-                                        text: 'StudyAI',
+                                        text: 'NeuRA',
                                         style: TextStyle(
                                           color: Color(0xFF7C3AED),
                                           fontWeight: FontWeight.w700,

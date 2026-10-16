@@ -81,7 +81,7 @@ router.post('/register', async (req: Request, res: Response): Promise<any> => {
   }
 });
 
-// POST /auth/login
+// POST /auth/login (optimized — batched DB writes)
 router.post('/login', async (req: Request, res: Response): Promise<any> => {
   try {
     const data = loginSchema.parse(req.body);
@@ -97,16 +97,19 @@ router.post('/login', async (req: Request, res: Response): Promise<any> => {
     const isValidPassword = await bcrypt.compare(data.password, user.passwordHash);
     if (!isValidPassword) return res.status(401).json({ error: 'Incorrect email or password. Please try again.' });
 
+    // Generate tokens and persist device + refresh token in a single transaction
     const deviceInfo = (req.headers['user-agent'] as string) || 'Mobile App';
-    const device = await prisma.device.create({
-      data: { userId: user.id, deviceInfo }
-    });
-
     const accessToken = generateAccessToken(user.id);
-    const refreshToken = generateRefreshToken(user.id, device.id);
 
-    await prisma.refreshToken.create({
-      data: { token: refreshToken, userId: user.id, deviceId: device.id, expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) }
+    const { refreshToken } = await prisma.$transaction(async (tx) => {
+      const device = await tx.device.create({
+        data: { userId: user.id, deviceInfo }
+      });
+      const refreshToken = generateRefreshToken(user.id, device.id);
+      await tx.refreshToken.create({
+        data: { token: refreshToken, userId: user.id, deviceId: device.id, expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) }
+      });
+      return { refreshToken };
     });
 
     return res.json({ 

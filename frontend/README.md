@@ -1,4 +1,4 @@
-# StudyAi - Mobile & Web Frontend
+# NeuRA - Mobile & Web Frontend
 
 Modern cross-platform mobile and web application built with Flutter, Riverpod state management, and Material 3 design system.
 

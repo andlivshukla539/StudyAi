@@ -40,11 +40,8 @@ class _AiStudyCompanionAppState extends ConsumerState<AiStudyCompanionApp> {
 
   Future<void> _enableHighRefreshRate() async {
     try {
-      final displays = await WidgetsBinding.instance.platformDispatcher.displays.toList();
-      // On Android, FlutterDisplayMode plugin or platform channel sets this,
-      // but the simplest approach is to allow the system to use the max rate.
       // Flutter 3.x+ automatically respects the device's max refresh rate
-      // when `SchedulerBinding` is initialised, which we've done above.
+      // when SchedulerBinding is initialized.
     } catch (_) {}
   }
 
@@ -53,7 +50,7 @@ class _AiStudyCompanionAppState extends ConsumerState<AiStudyCompanionApp> {
     final router = ref.watch(routerProvider);
 
     return MaterialApp.router(
-      title: 'AI Study Companion',
+      title: 'NeuRA',
       theme: AppTheme.lightTheme,
       routerConfig: router,
       debugShowCheckedModeBanner: false,

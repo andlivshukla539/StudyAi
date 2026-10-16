@@ -326,40 +326,52 @@ class _QuizListScreenState extends ConsumerState<QuizListScreen> {
                                 // Badges row & delete icon
                                 Row(
                                   children: [
-                                    // Subject pill
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFF1F5F9),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Text(
-                                        subject,
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w600,
-                                          color: AppColors.textSecondary,
-                                        ),
+                                    // Pills section (auto-resizes and truncates with ellipsis if document title is long)
+                                    Expanded(
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          // Subject pill
+                                          Flexible(
+                                            child: Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                              decoration: BoxDecoration(
+                                                color: const Color(0xFFF1F5F9),
+                                                borderRadius: BorderRadius.circular(8),
+                                              ),
+                                              child: Text(
+                                                subject,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: AppColors.textSecondary,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 6),
+                                          // Difficulty pill
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                            decoration: BoxDecoration(
+                                              color: _getDifficultyBg(difficulty),
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                            child: Text(
+                                              difficulty,
+                                              style: TextStyle(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w700,
+                                                color: _getDifficultyColor(difficulty),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    const SizedBox(width: 6),
-                                    // Difficulty pill
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                      decoration: BoxDecoration(
-                                        color: _getDifficultyBg(difficulty),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Text(
-                                        difficulty,
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w700,
-                                          color: _getDifficultyColor(difficulty),
-                                        ),
-                                      ),
-                                    ),
-                                    const Spacer(),
+                                    const SizedBox(width: 8),
                                     // Delete menu button
                                     IconButton(
                                       icon: const Icon(Icons.delete_outline_rounded,
@@ -388,18 +400,25 @@ class _QuizListScreenState extends ConsumerState<QuizListScreen> {
                                 const SizedBox(height: 6),
 
                                 // Metadata row (Questions + Attempt Score / Status)
-                                Row(
+                                Wrap(
+                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  spacing: 12,
+                                  runSpacing: 4,
                                   children: [
-                                    const Icon(Icons.format_list_bulleted_rounded,
-                                        size: 15, color: AppColors.textMuted),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      '$questionCount questions',
-                                      style: AppTypography.bodySmall.copyWith(
-                                        color: AppColors.textMuted,
-                                      ),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(Icons.format_list_bulleted_rounded,
+                                            size: 15, color: AppColors.textMuted),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          '$questionCount questions',
+                                          style: AppTypography.bodySmall.copyWith(
+                                            color: AppColors.textMuted,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    const SizedBox(width: 12),
                                     if (isInProgress) ...[
                                       Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),

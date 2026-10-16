@@ -24,7 +24,7 @@ class ProfileScreen extends ConsumerWidget {
           ],
         ),
         content: const Text(
-          'Are you sure you want to log out of StudyAI? Your offline study progress will remain saved on this device.',
+          'Are you sure you want to log out of NeuRA? Your offline study progress will remain saved on this device.',
         ),
         actions: [
           TextButton(
@@ -63,7 +63,7 @@ class ProfileScreen extends ConsumerWidget {
     final fullName = (firstName.isNotEmpty || lastName.isNotEmpty)
         ? '$firstName $lastName'.trim()
         : (user?.email.split('@').first ?? 'Learner');
-    final email = user?.email ?? 'student@studyai.app';
+    final email = user?.email ?? 'student@neura.app';
 
     final quizzesAsync = ref.watch(quizzesProvider);
     final docsAsync = ref.watch(documentsProvider);
@@ -175,7 +175,7 @@ class ProfileScreen extends ConsumerWidget {
                           Icon(Icons.auto_awesome, size: 14, color: AppColors.primary),
                           SizedBox(width: 6),
                           Text(
-                            'StudyAI Scholar',
+                            'NeuRA Scholar',
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w700,
@@ -312,7 +312,7 @@ class ProfileScreen extends ConsumerWidget {
                       icon: Icons.auto_awesome_rounded,
                       iconColor: AppColors.primary,
                       iconBg: const Color(0xFFF0EEFF),
-                      title: 'AI Study Companion',
+                      title: 'NeuRA',
                       subtitle: 'Configure tutor persona & questions',
                       onTap: () => context.go('/chat'),
                     ),
@@ -344,9 +344,9 @@ class ProfileScreen extends ConsumerWidget {
                           context: context,
                           builder: (ctx) => AlertDialog(
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-                            title: const Text('StudyAI Help'),
+                            title: const Text('NeuRA Help'),
                             content: const Text(
-                              'StudyAI is your AI-powered companion.\n\n'
+                              'NeuRA is your AI-powered companion.\n\n'
                               '• Upload PDFs in Documents to generate quizzes.\n'
                               '• Use Focus Timer for 25-min Pomodoro sessions.\n'
                               '• Chat with the AI tutor for interactive problem solving.\n'
@@ -394,7 +394,7 @@ class ProfileScreen extends ConsumerWidget {
 
               // ── 6. App Version Footer ─────────────────────────────────────
               Text(
-                'StudyAI • Version 1.0.0\nEmpowering your learning journey',
+                'NeuRA • Version 1.0.0\nEmpowering your learning journey',
                 textAlign: TextAlign.center,
                 style: AppTypography.bodySmall.copyWith(
                   color: AppColors.textMuted,

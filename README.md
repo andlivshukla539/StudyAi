@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="img/appIcon.png" alt="StudyAi Logo" width="120" style="border-radius: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);" />
+  <img src="img/appIcon.png" alt="NeuRA Logo" width="120" style="border-radius: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);" />
 </p>
 
-<h1 align="center">StudyAi - Intelligent Multi-Agent Study Companion</h1>
+<h1 align="center">NeuRA - Intelligent Multi-Agent Study Companion</h1>
 
 <p align="center">
   <strong>Your all-in-one AI study mentor powered by Google Gemini, Supabase Vector RAG, and Flutter.</strong>
@@ -40,9 +40,9 @@
 
 ## 🌟 Overview
 
-**StudyAi** is an advanced AI-powered educational companion designed to transform how students and lifelong learners interact with study material. By pairing **Google Gemini** with a **pgvector-backed Retrieval-Augmented Generation (RAG)** pipeline and an intuitive cross-platform **Flutter** client, StudyAi delivers context-aware tutoring directly from uploaded textbooks and lecture notes.
+**NeuRA** is an advanced AI-powered educational companion designed to transform how students and lifelong learners interact with study material. By pairing **Google Gemini** with a **pgvector-backed Retrieval-Augmented Generation (RAG)** pipeline and an intuitive cross-platform **Flutter** client, NeuRA delivers context-aware tutoring directly from uploaded textbooks and lecture notes.
 
-### Why StudyAi?
+### Why NeuRA?
 - **Zero Hallucination with Document RAG**: Answers are grounded directly in your uploaded PDF materials with page-level citations.
 - **Multi-Agent Orchestration**: Specialized AI agents handle tutoring, intelligent quiz generation, personalized study planning, and flashcards.
 - **Clean Monorepo Architecture**: Clean separation of concerns with standalone `/frontend` and `/backend` directories.
@@ -141,7 +141,7 @@ graph TD
 ## 📁 Repository Structure
 
 ```text
-StudyAi/
+NeuRA/
 ├── frontend/                  # Flutter mobile & web client application
 │   ├── android/              # Native Android configuration
 │   ├── ios/                  # Native iOS configuration
